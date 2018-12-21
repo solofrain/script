@@ -110,7 +110,7 @@
 ##    Ji Li <liji@bnl.gov>
 ##
 #############################################################################################################
-copy_en=1	# Enable copy. Used for debug.
+copy_en=0	# Enable copy. Used for debug.
 
 # Detector model
 detector="perkinElmer"
@@ -172,6 +172,7 @@ base_dir=$build_dir"/"$base
 get $base_dir"/bin"
 
 cd ..
+
 #*****************************************************
 # 2. Copy synApps modules
 #*****************************************************
@@ -204,7 +205,6 @@ support_dir=$synapps_dir"/"$synapps_ver"/support"
 mkcd $synapps_ver
 mkcd support
 
-# now in epics/synApps/Rx-x/support/
 
 #========================================================
 # 2.1 Copy the asyn/iocStatus whose bin/, db/, 
@@ -220,7 +220,6 @@ do
 	cd ..
 done
 
-# now in epics/synApps/Rx-x/support/
 
 #========================================================
 # 2.2 Copy autosave
@@ -248,7 +247,6 @@ get $autosave_dir"/lib"
 
 cd ..
 
-# now in epics/synApps/Rx-x/support/
 
 #========================================================
 # 2.3 Copy busy
@@ -267,7 +265,7 @@ mkcd $busy
 
 get $busy_dir"/bin"
 
-mkcd asApp
+mkcd busyApp
 
 get $busy_dir"/busyApp/Db"
 cd ..
@@ -276,10 +274,9 @@ get $busy_dir"/lib"
 
 cd ..
 
-# now in epics/synApps/Rx-x/support/
 
 #========================================================
-# 2.5 Copy calc
+# 2.4 Copy calc
 #========================================================
 folders=$(ls -r1 $support_dir | grep calc)
 
@@ -302,10 +299,9 @@ get $calc_dir"/lib"
 
 cd ..
 
-# now in epics/synApps/Rx-x/support/
 
 #========================================================
-# 2.6 Copy seq
+# 2.5 Copy seq
 #========================================================
 folders=$(ls -r1 $support_dir | grep seq)
 
@@ -325,10 +321,9 @@ get $seq_dir"/lib"
 
 cd ..
 
-# now in epics/synApps/Rx-x/support/
 
 #========================================================
-# 2.8 Copy sscan
+# 2.6 Copy sscan
 #========================================================
 folders=$(ls -r1 $support_dir | grep sscan)
 
@@ -342,7 +337,8 @@ sscan_dir=$support_dir"/"$sscan
 
 mkcd $sscan
 
-mkcd asApp
+mkcd sscanApp
+
 
 get $sscan_dir"/sscanApp/Db"
 cd ..
@@ -351,10 +347,9 @@ get $sscan_dir"/lib"
 
 cd ..
 
-# now in epics/synApps/Rx-x/support/
 
 #========================================================
-# 2.9 Copy areaDetector
+# 2.7 Copy areaDetector
 #========================================================
 
 # Get areaDetector folder name
@@ -366,14 +361,18 @@ do
 	break
 done
 
+areadetector_ver=${areadetector:13}
+areadetector_ver=${areadetector_ver//-/.}
+
+echo $areadetector_ver
+
 areadetector_dir=$support_dir"/"$areadetector
 
 mkcd $areadetector
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/
 
 #----------------------------------------------------
-# 2.9.1 synApps/Rx-x/support/areaDetector-x-x/ADCore/db/
+# 2.7.1 synApps/Rx-x/support/areaDetector-x-x/ADCore/
 #----------------------------------------------------
 folders=$(ls -r1 $areadetector_dir | grep ADCore)
 
@@ -386,26 +385,28 @@ adcore_dir=$areadetector_dir"/"$adcore
 
 mkcd $adcore
 
+# db/
+
 get $adcore_dir"/db"
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/ADCore/
 
-#----------------------------------------------------
-# 2.9.2 synApps/Rx-x/support/areaDetector-x-x/ADCore/iocBoot/
-#----------------------------------------------------
+mkcd ADApp
+
+get $adcore_dir"/ADApp/Db"
+
+cd ..
+
+# iocBoot/
 get $adcore_dir"/iocBoot"
 
-#----------------------------------------------------
-# 2.9.3 synApps/Rx-x/support/areaDetector-x-x/ADCore/lib/windows-x64-static/
-#----------------------------------------------------
+# lib/
 get $adcore_dir"/lib"
 
 cd ..
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/
 
 #----------------------------------------------------
-# 2.9.4 synApps/Rx-x/support/areaDetector-x-x/ADPerkinElmer/bin/windows-x64-static/
+# 2.7.2 synApps/Rx-x/support/areaDetector-x-x/AD$Detector/
 #----------------------------------------------------
 folders=$(ls -r1 $areadetector_dir | grep "AD"$Detector)
 
@@ -416,20 +417,17 @@ do
 done
 addetector_dir=$areadetector_dir"/"$addetector
 
-mkcd addetector
+mkcd $addetector
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/AD$Detector
+# bin/
+get $addetector_dir"/bin"
 
-#----------------------------------------------------
-# 2.9.5 synApps/Rx-x/support/areaDetector-x-x/ADPerkinElmer/db/
-#----------------------------------------------------
+
+#db/
 get $addetector_dir"/db"
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/AD$Detector
 
-#----------------------------------------------------
-# 2.9.6 synApps/Rx-x/support/areaDetector-x-x/ADPerkinElmer/iocs/perkinElmerIOC/bin/windows-x64-static/
-#----------------------------------------------------
+#iocs/perkinElmerIOC/bin/
 mkcd iocs
 mkcd $detector"IOC"
 
@@ -437,36 +435,30 @@ ioc_dir=$addetector_dir"/iocs/"$detector"IOC"
 
 get $ioc_dir"/bin"
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/AD$Detector/iocs/perkinElmerIOC/
 
-#----------------------------------------------------
-# 2.9.7 synApps/Rx-x/support/areaDetector-x-x/ADPerkinElmer/iocs/perkinElmerIOC/dbd/
-#----------------------------------------------------
-#echo $ioc_dir"/dbd"
-#get $ioc_dir"/dbd"
+# iocs/perkinElmerIOC/dbd/
+get $ioc_dir"/dbd"
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/AD$Detector/iocs/perkinElmerIOC/
 
-#----------------------------------------------------
-# 2.9.8 synApps/Rx-x/support/areaDetector-x-x/ADPerkinElmer/iocs/perkinElmerIOC/iocBoot/iocPerkinElmer/
-#----------------------------------------------------
+# iocs/perkinElmerIOC/iocBoot/
 get $ioc_dir"/iocBoot"
 
 cd ../..
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/AD$Detector/
 
-#----------------------------------------------------
-# 2.9.9 synApps/Rx-x/support/areaDetector-x-x/ADPerkinElmer/lib/windows-x64-static/
-#----------------------------------------------------
+# lib/windows-x64-static/
 get $addetector_dir"/lib"
 
-cd ..
+# perkinElmerApp/Db/
+mkcd $detector"App"
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/
+get $addetector_dir"/"$detector"App/Db"
+
+cd ../..
+
 
 #----------------------------------------------------
-# 2.9.10 synApps/Rx-x/support/areaDetector-x-x/ADSupport/bin/windows-x64-static/
+# 2.9.10 synApps/Rx-x/support/areaDetector-x-x/ADSupport/
 #----------------------------------------------------
 folders=$(ls -r1 $areadetector_dir | grep ADSupport)
 
@@ -477,26 +469,23 @@ do
 done
 adsupport_dir=$areadetector_dir"/"$adsupport
 
-mkcd adsupport
+mkcd $adsupport
 
+# bin/
 get $adsupport_dir"/bin"
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/ADSupport/
 
-#----------------------------------------------------
-# 2.9.11 synApps/Rx-x/support/areaDetector-x-x/ADSupport/lib/windows-x64-static/
-#----------------------------------------------------
+# lib/
 get $adsupport_dir"/lib"
 
-# now in epics/synApps/Rx-x/support/areaDetector-x-x/ADSupport/
 
 #*****************************************************
 # 3. Clean up
 #*****************************************************
 cd ../../../../../..
 
-comp "AD"$Detector"-Prebuilt-windows-x64-static.tar.gz" epics
+comp $Detector"-AD"$areadetector_ver"-Prebuilt-windows-x64-static.tar.gz" epics
 
-rm -rf epics
+#rm -rf epics
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
