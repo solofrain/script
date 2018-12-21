@@ -110,7 +110,7 @@
 ##    Ji Li <liji@bnl.gov>
 ##
 #############################################################################################################
-copy_en=0	# Enable copy. Used for debug.
+copy_en=1	# Enable copy. Used for debug.
 
 # Detector model
 detector="perkinElmer"
