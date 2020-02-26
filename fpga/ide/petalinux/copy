@@ -1,0 +1,5 @@
+#!/bin/bash
+#rm /media/liji/BOOT/*
+
+cp /tftpboot/BOOT.BIN /media/liji/BOOT/
+cp /tftpboot/image.ub /media/liji/BOOT/

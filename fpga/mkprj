@@ -1,0 +1,32 @@
+#!/bin/bash
+
+BOARDS=(pynq picozed zdfe)
+
+mkdir $1
+cd $1
+
+for brd in "${BOARDS[@]}"
+do
+    mkdir $brd
+    cd $brd
+    
+    mkdir hardware
+    cd hardware
+    mkdir src
+    cd src
+    mkdir bd
+    mkdir hdl
+    mkdir ip
+    mkdir lib
+    mkdir tb
+    mkdir xdc
+    cd ../..
+
+    mkdir software
+    
+
+    cd ..
+done
+
+mkdir download
+#touch $2
