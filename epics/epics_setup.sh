@@ -85,7 +85,7 @@ compile_base() {
         
     unzip base-${base_ver}.zip
     rm base-${base_ver}.zip
-    mv epics-base-${base_ver}.zip base-${base_ver}.zip
+    mv epics-base-${base_ver} base-${base_ver}
 
     cd base-${base_ver}
     make
@@ -153,16 +153,16 @@ CALC=${#mod_name[@]}
 mod_name[$CALC]='calc'
 mod_ver[$CALC]='R3-7-3'
 
-MODBUS=${#mod_name[@]}
-mod_name[$MODBUS]='modbus'
-mod_ver[$MODBUS]='R3-0'
+SSCAN=${#mod_name[@]}
+mod_name[$SSCAN]='sscan'
+mod_ver[$SSCAN]='R2-11-3'
 
 IOCSTATS=${#mod_name[@]}
 mod_name[$IOCSTATS]='iocStats'
 mod_ver[$IOCSTATS]='3.1.16'
 
 
-dont_care=('SNCSEQ' 'IPAC' 'SSCAN')
+dont_care=('SNCSEQ' 'IPAC' )
 
 num=${#mod_name[@]}
 
@@ -200,14 +200,14 @@ else
     echo "Installing EPICS base..."
     echo -e "Version: ${base_ver}\n"
 
-    if [ ! -d epics-base-${base_ver} ]; then
+    if [ ! -d ${BASE_DIR} ]; then
         ls
         echo -e "base-${base_ver} doesn't exist\n"
 
         compile_base
         echo -e "\nInstallation of base-${base_ver} completed.\n"
     else
-        cd base-${base_ver}
+        cd ${BASE_DIR}
         echo -e "\nbase-${base_ver} already installed.\n"
     fi
 
