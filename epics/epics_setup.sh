@@ -310,21 +310,21 @@ cd ../..
 #    installed, create a script to install
 #    these mode later.
 #------------------------------------------
-if [ ${#pending_mod_name[0][@]} -gt 2 ]; then
-    echo "Please run install_epics_modules.sh with sudo"
-    echo "to install the following modules, and rerun"
-    echo "${my_name} to install the rest modules."
+#if [ ${#pending_mod_name[0][@]} -gt 2 ]; then
+#    echo "Please run install_epics_modules.sh with sudo"
+#    echo "to install the following modules, and rerun"
+#    echo "${my_name} to install the rest modules."
 
-    echo '#!/bin/bash' > install_epics_modules.sh
-    num_pending_mod=${#pending_mod_name[@]}
-    for ((n=0;n<num_pemding_mod;n++))
-    {
-        mod="epics-${pending_mod_name[n]}-${pending_mod_ver[n]}"
-        echo "> ${mod}}"
-        echo "apt install ${mod}" >> install_epics_modules.sh
-    }
-    chmod +x install_epics_modules.sh
-fi
+#    echo '#!/bin/bash' > install_epics_modules.sh
+#    num_pending_mod=${#pending_mod_name[@]}
+#    for ((n=0;n<num_pemding_mod;n++))
+#    {
+#        mod="epics-${pending_mod_name[n]}-${pending_mod_ver[n]}"
+#        echo "> ${mod}}"
+#        echo "apt install ${mod}" >> install_epics_modules.sh
+#    }
+#    chmod +x install_epics_modules.sh
+#fi
 
 
 #==========================================
