@@ -74,6 +74,23 @@ var_correction() {
     }
 }
 
+
+#==========================================
+# Function compile_base:
+#   Download the source code of the EPICS
+#   base and compile.
+#------------------------------------------
+compile_base() {
+    wget -O base-${base_ver}.zip https://codeload.github.com/epics-base/epics-base/zip/${base_ver}
+        
+    unzip base-${base_ver}.zip
+    rm base-${base_ver}.zip
+    mv epics-base-${base_ver}.zip base-${base_ver}.zip
+
+    cd base-${base_ver}
+    make
+}
+
 #==========================================
 # Function compile_module:
 #   Download the source code of the module
@@ -94,7 +111,7 @@ compile_module() {
 
     make
 
-    echo -e "Installation of ${module_name}-${module_version} completed.\n"
+    echo -e "\nInstallation of ${module_name}-${module_version} completed.\n"
 }
 
 #***********************************************
@@ -186,18 +203,12 @@ else
     if [ ! -d epics-base-${base_ver} ]; then
         ls
         echo -e "base-${base_ver} doesn't exist\n"
-        #wget https://epics.anl.gov/download/base/base-${base_ver}.tar.gz
-        wget -O base-${base_ver}.zip https://codeload.github.com/epics-base/epics-base/zip/${base_ver}
-        
-        unzip base-${base_ver}.zip
-        rm base-${base_ver}.zip
 
-        cd epics-base-${base_ver}
-        make
-        echo -e "Installation of base-${base_ver} completed.\n"
+        compile_base
+        echo -e "\nInstallation of base-${base_ver} completed.\n"
     else
         cd base-${base_ver}
-        echo -e "base-${base_ver} already installed.\n"
+        echo -e "\nbase-${base_ver} already installed.\n"
     fi
 
     cd modules
