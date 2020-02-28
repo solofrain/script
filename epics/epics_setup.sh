@@ -81,11 +81,13 @@ var_correction() {
 #   base and compile.
 #------------------------------------------
 compile_base() {
-    wget -O base-${base_ver}.zip https://codeload.github.com/epics-base/epics-base/zip/${base_ver}
+    #wget -O base-${base_ver}.zip https://codeload.github.com/epics-base/epics-base/zip/${base_ver}
+    wget https://epics.anl.gov/download/base/base-${base_ver}.tar.gz
+
+    tar xf base-${base_ver}.tar.gz
         
     unzip base-${base_ver}.zip
-    rm base-${base_ver}.zip
-    mv epics-base-${base_ver} base-${base_ver}
+    rm base-${base_ver}.tar.gz
 
     cd base-${base_ver}
     make
@@ -107,16 +109,17 @@ compile_module() {
 
     var_correction
 
-    cd ../..
+    cd ..
 
     make
+
+    cd ..
 
     echo -e "\nInstallation of ${module_name}-${module_version} completed.\n"
 }
 
 #***********************************************
 
-clear
 
 my_name=${0##*/}
 
@@ -132,14 +135,14 @@ my_name=${0##*/}
 
 arch='linux-x86_64'
 
-base_ver='R7.0.3.1'
+base_ver='7.0.3.1'
 
 mod_name=()
 mod_ver=()
 
 ASYN=${#mod_name[@]}
 mod_name[$ASYN]='asyn'
-mod_ver[$ASYN]='R4-8'
+mod_ver[$ASYN]='R4-39'
 
 AUTOSAVE=${#mod_name[@]}
 mod_name[$AUTOSAVE]='autosave'
@@ -328,4 +331,8 @@ cd ../..
 
 
 #==========================================
+
+
+# Install package to enable manage-iocs and other services.
+sudo apt install sysv-rc-softioc
 
