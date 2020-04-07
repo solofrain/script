@@ -1,0 +1,8 @@
+#!/bin/bash
+
+petalinux-config --get-hw-description=../../hardware/zFlyscan/zFlyscan.sdk/
+
+petalinux-build
+
+petalinux-package --boot --fsbl images/linux/zynq_fsbl.elf --fpga images/linux/system.bit --u-boot --force
+

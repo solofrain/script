@@ -1,0 +1,10 @@
+#!/bin/bash
+
+rm -f /media/liji/BOOT/*
+cp /tftpboot/BOOT.BIN /media/liji/BOOT/.
+cp /tftpboot/image.ub /media/liji/BOOT/.
+
+sudo umount /dev/sdd1
+sudo umount /dev/sdd2
+#sudo udisksctl power-off -b /dev/sdd1
+#sudo udisksctl power-off -b /dev/sdd2
