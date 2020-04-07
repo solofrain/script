@@ -81,11 +81,13 @@ var_correction() {
 #   base and compile.
 #------------------------------------------
 compile_base() {
-    wget -O base-${base_ver}.zip https://codeload.github.com/epics-base/epics-base/zip/${base_ver}
+    #wget -O base-${base_ver}.zip https://codeload.github.com/epics-base/epics-base/zip/${base_ver}
+    wget https://epics.anl.gov/download/base/base-${base_ver}.tar.gz
+
+    tar xf base-${base_ver}.tar.gz
         
     unzip base-${base_ver}.zip
-    rm base-${base_ver}.zip
-    mv epics-base-${base_ver}.zip base-${base_ver}.zip
+    rm base-${base_ver}.tar.gz
 
     cd base-${base_ver}
     make
@@ -107,16 +109,17 @@ compile_module() {
 
     var_correction
 
-    cd ../..
+    cd ..
 
     make
+
+    cd ..
 
     echo -e "\nInstallation of ${module_name}-${module_version} completed.\n"
 }
 
 #***********************************************
 
-clear
 
 my_name=${0##*/}
 
@@ -132,14 +135,14 @@ my_name=${0##*/}
 
 arch='linux-x86_64'
 
-base_ver='R7.0.3.1'
+base_ver='7.0.3.1'
 
 mod_name=()
 mod_ver=()
 
 ASYN=${#mod_name[@]}
 mod_name[$ASYN]='asyn'
-mod_ver[$ASYN]='R4-8'
+mod_ver[$ASYN]='R4-39'
 
 AUTOSAVE=${#mod_name[@]}
 mod_name[$AUTOSAVE]='autosave'
@@ -153,16 +156,16 @@ CALC=${#mod_name[@]}
 mod_name[$CALC]='calc'
 mod_ver[$CALC]='R3-7-3'
 
-MODBUS=${#mod_name[@]}
-mod_name[$MODBUS]='modbus'
-mod_ver[$MODBUS]='R3-0'
+SSCAN=${#mod_name[@]}
+mod_name[$SSCAN]='sscan'
+mod_ver[$SSCAN]='R2-11-3'
 
 IOCSTATS=${#mod_name[@]}
 mod_name[$IOCSTATS]='iocStats'
 mod_ver[$IOCSTATS]='3.1.16'
 
 
-dont_care=('SNCSEQ' 'IPAC' 'SSCAN')
+dont_care=('SNCSEQ' 'IPAC' )
 
 num=${#mod_name[@]}
 
@@ -200,14 +203,14 @@ else
     echo "Installing EPICS base..."
     echo -e "Version: ${base_ver}\n"
 
-    if [ ! -d epics-base-${base_ver} ]; then
+    if [ ! -d ${BASE_DIR} ]; then
         ls
         echo -e "base-${base_ver} doesn't exist\n"
 
         compile_base
         echo -e "\nInstallation of base-${base_ver} completed.\n"
     else
-        cd base-${base_ver}
+        cd ${BASE_DIR}
         echo -e "\nbase-${base_ver} already installed.\n"
     fi
 
@@ -310,22 +313,26 @@ cd ../..
 #    installed, create a script to install
 #    these mode later.
 #------------------------------------------
-if [ ${#pending_mod_name[0][@]} -gt 2 ]; then
-    echo "Please run install_epics_modules.sh with sudo"
-    echo "to install the following modules, and rerun"
-    echo "${my_name} to install the rest modules."
+#if [ ${#pending_mod_name[0][@]} -gt 2 ]; then
+#    echo "Please run install_epics_modules.sh with sudo"
+#    echo "to install the following modules, and rerun"
+#    echo "${my_name} to install the rest modules."
 
-    echo '#!/bin/bash' > install_epics_modules.sh
-    num_pending_mod=${#pending_mod_name[@]}
-    for ((n=0;n<num_pemding_mod;n++))
-    {
-        mod="epics-${pending_mod_name[n]}-${pending_mod_ver[n]}"
-        echo "> ${mod}}"
-        echo "apt install ${mod}" >> install_epics_modules.sh
-    }
-    chmod +x install_epics_modules.sh
-fi
+#    echo '#!/bin/bash' > install_epics_modules.sh
+#    num_pending_mod=${#pending_mod_name[@]}
+#    for ((n=0;n<num_pemding_mod;n++))
+#    {
+#        mod="epics-${pending_mod_name[n]}-${pending_mod_ver[n]}"
+#        echo "> ${mod}}"
+#        echo "apt install ${mod}" >> install_epics_modules.sh
+#    }
+#    chmod +x install_epics_modules.sh
+#fi
 
 
 #==========================================
+
+
+# Install package to enable manage-iocs and other services.
+sudo apt install sysv-rc-softioc
 
