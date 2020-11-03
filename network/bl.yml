@@ -1,0 +1,119 @@
+ 
+#====================================================
+# 28ID1
+-
+    name: "xf28id1"
+    alias: "PDF"
+    host:
+        -
+            name: "xf28id1-ioc1"
+            os: "Debian 8"
+            note: "IOC server not in use"
+        -
+            name: "xf28id1-ioc2"
+            os: "Debian 8"
+            note: "IOC server main"
+        -
+            name: "xf28id1-det1"
+            os : "Windows 10"
+            note: "IOC server PE1"
+        -
+            name: "xf28id1-det2"
+            os: "Windows 10"
+            note: "IOC server PE2"
+        -
+            name: "xf28id1-ecat1"
+            os: "Debian ?"
+            note: "IOC server EtherCAT/fast shutter"
+        -
+            name: "xf28id1-rpi1"
+            os: "Debian ?"
+            note: "IOC server Lakeshore 335/CryoStat"
+        -
+            name: "xf28id1-ws1"
+            os: "Debian ?"
+            note: "Workstation 1"
+        -
+            name: "xf28id1-ws2"
+            os: "Debian ?"
+            note: "Workstation 2"
+        -
+            name: "xf28id1-ws3"
+            os: "CentOS 7"
+            note: "Workstation 3"
+        -
+            name: "xf28id1-ca1"
+            os: "Debian ?"
+            note: "Archive server"
+        -
+            name: "xf28id2-ca1"
+            os: "Debian ?"
+            note: "GPFS mount server"
+
+#====================================================
+# 28ID2
+-
+    name:  "xf28id2"
+    alias: "XPD"
+    host:
+        -
+            name: "xf28ida-ioc1"
+            os: "Debian 7"
+            note: "IOC server not in use"
+        -
+            name: "xf28ida-ioc2"
+            os: "Debian 9"
+            note: "IOC server A hutch"
+        -
+            name: "xf28id2-ioc1"
+            os: "Debian 8"
+            note: "IOC server main (C/D hutch)"
+        -
+            name: "xf28id2-ioc5"
+            os: "Debian ?"
+            note: "IOC server QEPro"
+        -
+            name: "xf28id2-det1"
+            os : "Windows 10"
+            note: "IOC server PE1"
+        -
+            name: "xf28id2-det2"
+            os: "Windows 10"
+            note: "IOC server PE2"
+        -
+            name: "xf28id2-cryo1"
+            os: "Debian ?"
+            note: "IOC server Cryocooler"
+        -
+            name: "xf28idc-rpi1"
+            os: "Debian ?"
+            note: "IOC server Lakeshore 335/CryoStat"
+        -
+            name: "xf28id2-em1"
+            os: "Debian ?"
+            note: "IOC server scintillation detector"
+        -
+            name: "xf28id2-ws1"
+            os: "Debian ?"
+            note: "Workstation 1"
+        -
+            name: "xf28id2-ws2"
+            os: "Debian ?"
+            note: "Workstation 2"
+        -
+            name: "xf28id2-ws3"
+            os: "CentOS 8"
+            note: "Workstation 3"
+        -
+            name: "xf28id2-ws6"
+            os: "?"
+            note: "Workstation 6"
+        -
+            name: "xf28id2-ws7"
+            os: "Windows 10"
+            note: "Workstation 7 data analysis"
+        -
+            name: "xf28id2-ca1"
+            os: "Debian ?"
+            note: "Storage mount server/archive server"
+

@@ -1,528 +1,154 @@
-#!/usr/bin/python3
-#========================================================
-# Data structure definition
-#========================================================
-#------------------------------------
-class beamline:
-    def __init__(self):
-        self.name = ''
-        self.alias = ''
-        self.list = () 
-#------------------------------------
+#!/opt/anaconda3/envs/ame=py38/bin/python
+'''
+This script is used to connect to beamline computers. It uses
+ssh forwarding when executed out side of beamline networks.
+It assumes that the script is executed on computers outside 
+of beamline networks, or on beamline computers that can 
+reach intranet.bnl.gov, otherwise it may fail.
 
-#------------------------------------
-#class beamline_set:
-#    def __init__(self):
-#        self.size = 0
-#        self.list = []
+To add beamlines/computers, add entries in bl.yml file in the 
+same directory.
 
-#    def __add__(self, member):
-#        self.size += 1
-#        self.list.append(member)
-#------------------------------------
+This script requires Python 3.5+.
+'''
 
-#========================================================
-# Data structure initialization
-#========================================================
-
-# 2-ID
-xf02id = beamline()
-xf02id.name  = 'xf02id'
-xf02id.alias = 'SIX'
-xf02id.list  = ('xf02id1-ioc1',
-                'xf02id1-ioc2',
-#               'xf02idd-ioc1',
-                'xf02id1-ws1',
-                'xf02id1-ws2',
-                'xf02id1-ws3')
-
-# 3-ID
-xf03id = beamline()
-xf03id.name  = 'xf03id'
-xf03id.alias = 'HXN'
-xf03id.list  = ('xf03ida-ioc1',
-#               'xf03ida-ioc2',
-                'xf03idc-ioc1',
-                'xf03idc-ioc4',
-                'xf03idc-ws1',
-                'xf03idc-ws2',
-                'xf03idc-ws3',
-                'xf03idc-ws4',
-#               'xf03ido-ws5',
-#                'xf03ido-ws6',
-                'xf03ido-ws7')
-#                'xf03ido-ws8',
-#                'xf03idc-ws9')
-
-# 4-BM
-xf04bm = beamline()
-xf04bm.name  = 'xf04bm'
-xf04bm.alias = 'XFM'
-xf04bm.list  = ('xf04bm-ioc1',
-                'xf04bm-ioc2',
-                'xf04bmb-ioc1',
-                'xf04bm-ws1',
-                'xf04bm-ws2')
-
-# 4-ID
-xf04id = beamline()
-xf04id.name  = 'xf04id'
-xf04id.alias = 'ISR'
-xf04id.list  = ('xf04ida-ioc1',
-                'xf04idb-ioc1',
-                'xf04id-srv1',
-                'xf04id-srv2',
-                'xf04id-ca1',
-                'xf04id-ws1',
-                'xf04id-ws2',
-                'xf04id-ws3')
-
-# 5-ID
-xf05id = beamline()
-xf05id.name  = 'xf05id'
-xf05id.alias = 'SRX'
-xf05id.list  = ('xf05ida-ioc1',
-                'xf05idd-ioc1',
-                'xf05idd-ioc3',
-                'xf05idd-iocm1',
-                'xf05id1-ws1',
-                'xf05id1-ws2',
-                'xf05id1-ws3',
-                'xf05id1-ws4',
-                'xf05id1-ws5',
-                'xf05id1-ws6',
-                'xf05id-ca1' )
+import yaml
+import os
+import socket
+import platform    # For getting the operating system name
+import subprocess  # For executing a shell command
 
 
-# 6-BM
-xf06bm = beamline()
-xf06bm.name  = 'xf06bm'
-xf06bm.alias = 'BMM'
-xf06bm.list  = ('xf06bm-ioc1',
-                'xf06bm-ws1',
-                'xf06bm-ws2',
-               # 'xf06bm-ws03',
-               # 'xf06bm-ws10',
-               # 'xf06bm-ws11',
-               # 'xf06bm-ws12',
-                'xf06bm-ca1' )
+#=============================================
+# Detect if a host is reachable
+def ping(host):
+    """
+    Returns True if host (str) responds to a ping request.
+    Remember that a host may not respond to a ping (ICMP) request even if the host name is valid.
+    """
 
-# 7-BM
-xf07bm = beamline()
-xf07bm.name  = 'xf07bm'
-xf07bm.alias = 'QAS'
-xf07bm.list  = ('xf07bm-ioc1',
-                'xf07bm-ws1',
-                'xf07bm-ws3')
+    # Option for the number of packets as a function of
+    param = '-n' if platform.system().lower()=='windows' else '-c'
+
+    # Building the command. Ex: "ping -c 1 google.com"
+    command = ['ping', param, '1',  host]
+    return subprocess.call(command) == 0
 
 
-# 7-ID-1
-xf07id1 = beamline()
-xf07id1.name  = 'xf07id1'
-xf07id1.alias = 'SST-1'
-xf07id1.list  = ('xf07id1-ioc1',
-#                 'xf07id1-ioc2',
-                 'xf07id1-ioc3',
-#                 'xf07id1-ioc4',
-#                 'xf07id1-ioc5',
-                 'xf07id1-ws1',
-                 'xf07id1-ws2',
-#                 'xf07id1-ws3',
-#                 'xf07id1-ws10',
-                 'xf07id1-ca1' )
+######################################################
+## main()
+os.system("clear")
+
+#=============================================
+# 1. Get beamline host information
+prog = __file__
+directory = os.path.dirname(os.path.abspath(prog))
+
+with open(directory+"/bl.yml", 'r') as bl:
+    try:
+        beamline = yaml.safe_load(bl)
+    except yaml.YAMLError as exc:
+        print(exc)
 
 
-# 7-ID-2
-xf07id2 = beamline()
-xf07id2.name  = 'xf07id2'
-xf07id2.alias = 'SST-2'
-xf07id2.list  = ('xf07id2-ioc1',
-                 'xf07id2-ioc2')
-
-# 8-BM
-xf08bm = beamline()
-xf08bm.name  = 'xf08bm'
-xf08bm.alias = 'TES'
-xf08bm.list  = ('xf08bm-ioc1',
-                'xf08bm-ioc2',
-                'xf08bm-ioc3',
-                'xf08bm-ws1',
-                'xf08bm-ws2',
-                'xf08bm-ws3',
-                'xf08bm-ws4',
-                'xf08bm-ws5')
-
-# 8-ID
-xf08id = beamline()
-xf08id.name  = 'xf08id'
-xf08id.alias = 'ISS'
-xf08id.list  = ('xf08ida-ioc1',
-                'xf08idb-ioc1',
-                'xf08id-ws01',
-                'xf08id-ws02',
-                'xf08id-ws03',
-                'xf08id-ws04',
-                'xf08id-ws06',
-                'xf08id-ws07')
-
-# 10-ID
-xf10id = beamline()
-xf10id.name  = 'xf10id'
-xf10id.alias = 'IXS'
-xf10id.list  = ('xf10ida-ioc1',
-                'xf10idb-ioc1',
-                'xf10idc-ioc1',
-                'xf10idd-ioc1',
-                'xf10id-ws1',
-                'xf10id-ws2',
-                'xf10id-ws3',
-                'xf10id-ws4',
-                'xf10id-ws5')
-
-# 11-BM
-xf11bm = beamline()
-xf11bm.name  = 'xf11bm'
-xf11bm.alias = 'CMS'
-xf11bm.list  = ('xf11bm-ioc1',
-                'xf11bm-ioc2',
-                'xf11bm-ws1',
-                'xf11bm-ws2',
-                'xf11bm-ws3',
-                'xf11bm-ws4')
-
-# 11-ID
-xf11id = beamline()
-xf11id.name  = 'xf11id'
-xf11id.alias = 'CHX'
-xf11id.list  = ('xf11ida-ioc1',
-                'xf11idb-ioc1',
-                'xf11id-ws1',
-                'xf11id-ws2',
-                'xf11id-ws3')
-
-# 12-ID
-xf12id = beamline()
-xf12id.name  = 'xf12id'
-xf12id.alias = 'SMI'
-xf12id.list  = ('xf12ida-ioc1',
-                'xf12idb-ioc1',
-                'xf12id-ws01',
-                'xf12id-ws02',
-                'xf12id-ws03',
-                'xf12id-ws04')
-
-# 16-ID
-xf16id = beamline()
-xf16id.name  = 'xf16id'
-xf16id.alias = 'LIX'
-xf16id.list  = ('xf16ida-ioc1',
-#                'xf16idb-ioc1',
-                'xf16idc-ioc1',
-#                'xf16idc-ioc2',
-                'xf16id-ws1',
-                'xf16id-ws2',
-#                'xf16id-ws3',
-#                'xf16id-ws4',
-                'xf16idc-ca' )
-
-# 17-BM
-xf17bm = beamline()
-xf17bm.name  = 'xf17bm'
-xf17bm.alias = 'XFP'
-xf17bm.list  = ('xf17bm-ioc1',
-                'xf17bm-ws1',
-                'xf17bm-ws2')
-
-# 17-ID-1
-xf17id1 = beamline()
-xf17id1.name  = 'xf17id1'
-xf17id1.alias = 'FMX'
-xf17id1.list  = ('xf17id1a-ioc1',
-                 'xf17id1c-ioc1',
-                 'xf17id1c-ioc2',
-                 'xf17id1-ws1',
-                 'xf17id1-ws2',
-                 'xf17id1-ws3',
-                 'xf17id1-ws4',
-                 'xf17id1-ws5',
-                 'xf17id1-ca1')
-
-# 17-ID-2
-xf17id2 = beamline()
-xf17id2.name  = 'xf17id2'
-xf17id2.alias = 'AMX'
-xf17id2.list  = ('xf17id2a-ioc1',
-                 'xf17id2b-ioc1',
-                 'xf17id2b-ioc2',
-                 'xf17id2-ws1',
-                 'xf17id2-ws2',
-                 'xf17id2-ws3',
-                 'xf17id2-ws4',
-                 'xf17id2-ws5',
-                 'xf17id2-ca1')
-
-
-# 18-ID
-xf18id = beamline()
-xf18id.name  = 'xf18id'
-xf18id.alias = 'FXI'
-xf18id.list  = ('xf18ida-ioc1',
-                'xf18idb-ioc1',
-                'xf18id-ioc1',
-                'xf18id-ws1',
-                'xf18id-ws2')
-
-# 19-ID
-xf19id = beamline()
-xf19id.name  = 'xf19id'
-xf19id.alias = 'NYX'
-xf19id.list  = ('xf19id1-ioc1',
-                'xf19id1-ws1',
-                'xf19id1-ws2',
-                'xf19id1-ws3',
-                'xf19id1-ws4',
-                'xf19id1-ws5',
-                'xf19id1-ws6',
-                'xf19id1-ws7',
-                'xf19id1-ws8',
-                'xf19id1-ws9',
-                'xf19id1-ws10')
-
-# 21-ID
-xf21id = beamline()
-xf21id.name  = 'xf21id'
-xf21id.alias = 'ESM'
-xf21id.list  = ('xf21id1-ioc1',
-                'xf21id1-ioc2',
-                'xf21idd-ioc1',
-                'xf21idd-ioc2',
-                'xf21id1-ws1',
-                'xf21id1-ws2',
-                'xf21id1-ws3',
-                'xf21id1-ws4')
-
-# 22-BM
-xf22ir = beamline()
-xf22ir.name  = 'xf22ir'
-xf22ir.alias = 'FIS-MET'
-xf22ir.list  = ('xf22ir-ca1',
-                'xf22ir2-ws1')
-
-# 23-ID-1
-xf23id = beamline()
-xf23id.name  = 'xf23id'
-xf23id.alias = 'CSX'
-xf23id.list  = ('xf23ida-ioc1',
-                'xf23id1-ioc1',
-                'xf23id2-ioc1',
-                'xf23id1-ioc2',
-                'xf23id1-ioc3',
-                'xf23id1-ws1',
-                'xf23id1-ws2',
-                'xf23id2-ws1',
-                'xf23id1-ws3',
-                'xf23id-ws1',
-                'xf23id-ws2',
-                'xf23id-ws3',
-                'xf23id-ws4',
-                'xf23id-ws5',
-                'xf23id-ws6',
-                'xf23id-ws7',
-                'xf23id-ws8')
-
-# 27-ID
-xf27id = beamline()
-xf27id.name  = 'xf27id'
-xf27id.alias = 'HEX'
-xf27id.list  = ()
-
-# 28-ID-1
-xf28id1 = beamline()
-xf28id1.name  = 'xf28id1'
-xf28id1.alias = 'PDF'
-xf28id1.list  = ('xf28id1-ioc1',
-                 'xf28id1-ioc2',
-                 'xf28id1-pdf',
-                 'xf28id1-pedet-ioc',
-                 'xf28id1-pedet-ioc2',
-                 'xf28id-ca1',
-                 'xf28id1-ca1',
-                 'xf28id2-srv1',
-                 'xf28id2-srv2',
-                 'xf28id1-pdf',
-                 'xf28id1-ws1',
-                 'xf28id1-ws2',
-                 'xf28id1-ws3')
-
-# 28-ID-2
-xf28id2 = beamline()
-xf28id2.name  = 'xf28id2'
-xf28id2.alias = 'XPD'
-xf28id2.list  = ('xf28ida-ioc1',
-                 'xf28ida-ioc2',
-                 'xf28idc-ioc1',
-                 'xf28idc-det-pe',
-                 'xf28idc-det-pe2',
-                 'xf28id-ca1',
-                 'xf28id2-srv1',
-                 'xf28id2-srv2',
-                 'xf28id2-ws1',
-                 'xf28id2-ws2',
-                 'xf28id2-ws3',
-                 'xf28id2-ws4',
-                 'xf28id2-ws5',
-                 'xf28id2-ws6')
-
-# 28-ID-D
-
-xf28idd = beamline()
-xf28idd.name  = 'xf28idd'
-xf28idd.alias = 'XPDD'
-xf28idd.list  = ('xf28idc-ioc1',
-                 'xf28idd-ioc1',
-                 'xf28idd-dex',
-                 'xf28idd-pe3',
-                 'xf28idd-pg1',
-                 'xf28idd-ws2',
-                 'xf28idd-ws3',
-                 'xf28idd-ws4',
-                 'xf28idd-ws5',
-                 'xf28idd-ws7',
-                 'xf28idd-ws8')
-
-# sandbox64
-sandbox = beamline()
-sandbox.name = 'sandbox'
-sandbox.alias = 'sandbox'
-sandbox.list = ('sandbox64-1',
-                'sandbox64-2')
-
-# FEIOC
-feioc = beamline()
-feioc.name = 'feioc'
-feioc.alias = 'feioc'
-feioc.list = ('feioc01',
-              'feioc02')
-
-# Proxy servers
-proxy = beamline()
-proxy.name = 'proxy'
-proxy.alias = 'proxy'
-proxy.list = ('box64-1.nsls2.bnl.gov',
-              'box64-2.nsls2.bnl.gov',
-              'box64-3.nsls2.bnl.gov',
-              'box64-4.nsls2.bnl.gov',
-              'ssh01.nsls2.bnl.gov')
-
-#bs = beamline_set()
-bs = [ xf02id,
-       xf03id,
-       xf04id,
-       xf04bm,
-       xf05id,
-       xf06bm,
-       xf07id1,
-       xf07id2,
-       xf07bm,
-       xf08id,
-       xf08bm,
-       xf10id,
-       xf11id,
-       xf11bm,
-       xf12id,
-       xf16id,
-       xf17id1,
-       xf17id2,
-       xf17bm,
-       xf18id,
-       xf19id, 
-       xf21id,
-       xf22ir,
-       xf23id,
-       xf27id,
-       xf28id1,
-       xf28id2,
-       xf28idd,
-       sandbox,
-       feioc,
-       proxy
-       ]
-
-# sandbox
-
-win_host = ('xf07bm-ws3',
-            'xf28id1-pedet-ioc',
-            'xf28id1-pedet-ioc2',
-            'xf28idc-det-pe',
-            'xf28idc-det-pe2',
-            'xf28idd-pe3',
-            'xf28idd-dex' )
-
-proxy
-
-#========================================================
-#import paramiko
-import os;
-os.system("clear");
-
+#=============================================
+# 2. Select beamline
 while 1:
-    print('Please select the beamline:');
-    print;
-    for i in range(len(bs)):
-        print( '    ', (i+1),'.',end='')
-        print( ' ' if((i+1)>9) else '  ',end='' )
-        print( '%s %s %c %s %c' %( bs[i].name, (7-len(bs[i].name))*' ', '(', bs[i].alias, ')' ) )
+    print('Please select the beamline:')
+    print
 
-    print;
+    for i in range(len(beamline)):
+        div = ' ' if (i+1>9) else '  '
+        string = '    ' + str(i+1) + '.' + div  + beamline[i]['name'] + (7-len(beamline[i]['name']))*' ' + '\t--  ' + beamline[i]['alias']
+        print(string)    
 
-    beamline_index = int(input())
+    print
 
-    print;
-
-    if (beamline_index>0) and (beamline_index<=len(bs)):
-        beamline_index -= 1;
-        break;
-    else:
-        print ('Incorrect input!');
-        print;
-
-print (bs[beamline_index].name.rstrip(), ' (', bs[beamline_index].alias, ') selected.');
-print;
-
-while 1:
-    print('Please select the computer:');
-    print('WARNING: not all computer names have been verified.');
-    print;
-
-    for i in range(len(bs[beamline_index].list)):
-        print('    ', (i+1), end='')
-        print( ' ' if((i+1)>9) else '  ', end='')
-        print(bs[beamline_index].list[i])
-  
-    computer_index = int(input())
-
-    print;
-
-    if (computer_index>0) and (computer_index<=len(bs[beamline_index].list)):
-        computer_index -= 1;
-        break;
+    bl_index = input()
+    if bl_index.isdigit():
+        bl_index = int(bl_index)
     else:
         print('Incorrect input!')
-        print;
+        continue
 
-host = bs[beamline_index].list[computer_index];
-is_win = False;
+    print
 
-for i in range(len(win_host)):
-    if (win_host[i]==host):
-        is_win = True;
-        break;
-
-if (is_win):
-    os.system("rdesktop -g 90% " + host);
-else:
-    if ("xf28idd-ioc1" in host):
-        os.system("ssh -t ssh01.nsls2.bnl.gov ssh user0@" + host);
+    if (bl_index>0) and (bl_index<=len(beamline)):
+        bl_index -= 1
+        break
     else:
-        os.system("ssh -Y -t box64-4.nsls2.bnl.gov ssh " + host);
+        print ('Incorrect input!')
+        print
+
+print (beamline[bl_index]['name'].rstrip(), ' (', beamline[bl_index]['alias'], ') selected.')
+print
+
+#=============================================
+# 3. Select host
+while 1:
+    print('Please select the computer:')
+    print('WARNING: not all computer names have been verified.')
+    print
+
+    for i in range(len(beamline[bl_index]['host'])):
+        div = '. ' if (i+1>9) else '.  '
+        string = '    ' + str(i+1) + div  + beamline[bl_index]['host'][i]['name'] + '\t--\t' + beamline[bl_index]['host'][i]['note']
+        print(string)
+
+    host_index = input()
+    if host_index.isdigit():
+        host_index = int(host_index)
+    else:
+        print('Incorrect input!')
+        continue
+
+    print
+
+    if (host_index>0) and (host_index<=len(beamline[bl_index]['host'])):
+        host_index -= 1
+        break
+    else:
+        print('Incorrect input!')
+        print
+
+host = beamline[bl_index]['host'][host_index]['name']
+
+
+#=============================================
+# 4. Compose the command based on location:
+#    . Off-site/On-site Wi-Fi
+#    . Campus network
+#    . BNL proxy
+#    . NSLS-II proxy
+#    . Beamline
+cmd1 = "ssh -Y -t liji@ssh.bnl.gov "
+cmd2 = "ssh -Y -t box64-4.nsls2.bnl.gov "
+if "win" in beamline[bl_index]['host'][host_index]['os'].lower():
+    cmd3 = "rdesktop -g 90% " + host
+else:
+    cmd3 = "ssh -Y " + host
+
+
+host = socket.gethostname()
+if not ping("intranet.bnl.gov"):
+    # location = off-site or on-site wifi
+    cmd = cmd1 + cmd2 + cmd3
+else:
+    if ("box64" in host or "ssh"in host):
+        if ("nsls2" in host):
+            # location = "nsls2-proxy"
+            cmd = cmd3
+        else:
+            # location = "bnl-proxy"
+            cmd = cmd2 + cmd3
+    elif "xf" in host:
+        # location = "beamline"
+        cmd = cmd3
+    else:
+        # location = "campus"
+        cmd = cmd2 + cmd3
+
+os.system(cmd)
+
+
 
