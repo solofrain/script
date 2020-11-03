@@ -117,3 +117,57 @@
             os: "Debian ?"
             note: "Storage mount server/archive server"
 
+#====================================================
+# 28IDD
+-
+    name:  "xf28idd"
+    alias: "XPDD"
+    host:
+        -
+            name: "xf28id2-ioc1"
+            os: "Debian 7"
+            note: "IOC server main (C/D hutch)"
+        -
+            name: "xf28idd-ioc1"
+            os: "Debian 10"
+            note: "IOC server Tomo"
+        -
+            name: "xf28idd-ioc2"
+            os: "Debian ?"
+            note: "IOC server SBU PG1"
+        -
+            name: "xf28id2-det3"
+            os: "Windows 10"
+            note: "IOC server SBU PE3"
+        -
+            name: "xf28id2-det4"
+            os: "Windows 10"
+            note: "IOC server Tomo Dexela"
+        -
+            name: "xf28idd-ws2"
+            os: "Debian ?"
+            note: "Workstation 2"
+        -
+            name: "xf28idd-ws3"
+            os: "Debian ?"
+            note: "Workstation 3"
+        -
+            name: "xf28idd-ws4"
+            os: "Debian ?"
+            note: "Workstation 4"
+        -
+            name: "xf28idd-ws5"
+            os: "Debian ?"
+            note: "Workstation 5"
+        -
+            name: "xf28idd-ws6"
+            os: "Debian ?"
+            note: "Workstation 6"
+        -
+            name: "xf28idd-ws8"
+            os: "Debian ?"
+            note: "Workstation 8"
+        -
+            name: "xf28idd-ws9"
+            os: "Debian ?"
+            note: "Workstation 9"

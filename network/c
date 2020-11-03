@@ -121,7 +121,7 @@ host = beamline[bl_index]['host'][host_index]['name']
 #    . BNL proxy
 #    . NSLS-II proxy
 #    . Beamline
-cmd1 = "ssh -Y -t liji@ssh.bnl.gov "
+cmd1 = "ssh -Y -t ssh.bnl.gov "
 cmd2 = "ssh -Y -t box64-4.nsls2.bnl.gov "
 if "win" in beamline[bl_index]['host'][host_index]['os'].lower():
     cmd3 = "rdesktop -g 90% " + host
