@@ -1,7 +1,8 @@
 # EPICS Build Utilities
 
-Makefile to build the EPICS module stack from source. Module versions
-are resolved automatically from the synApps `configure/RELEASE` file.
+Makefile to build the EPICS module stack from source. Module versions are resolved automatically from the synApps `configure/RELEASE` file.
+
+>`setup_and_build_ad.sh` and `setup_and_build_motor.sh` were previously used and were absorbed into the Makefile.
 
 ## Targets
 
