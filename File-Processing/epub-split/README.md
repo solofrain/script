@@ -2,7 +2,7 @@
 
 Split a big `.epub` file into small ones so that Sony PRS-950 can read the files fast.
 
-To split `fn.epub`, there must be a`fn.split` in the same directory of `fn.epub`, which contains the point where the file will be splitted. For example, the following file specifies that new files will be starting from `Chapter0007.xhtml`, `Chapter0092.xhtml`, etc:
+To split `fn.epub`, there must be a`fn.split` in the same directory of `fn.epub`, which contains the point where the file will be splitted. For example, the following file (`剑来.split`) specifies that new files will be starting from `Chapter0007.xhtml`, `Chapter0092.xhtml`, etc:
 
 ```
 Chapter0007.xhtml
